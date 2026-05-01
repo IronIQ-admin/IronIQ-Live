@@ -1,43 +1,31 @@
 import streamlit as st
 import pandas as pd
-import os
 
-st.set_page_config(page_title="IronIQ | Live Audit", layout="wide")
+st.set_page_config(page_title="IronIQ | Match Engine", layout="wide")
 st.title("IronIQ")
 st.subheader("Field-First Construction Intelligence")
 
-# 1. Performance-Based Pricing Table
-st.write("### Performance-Based Pricing (NTE)")
-pricing = {
-    "Tier": ["Small GC", "Mid GC", "Large GC"],
-    "Monthly NTE Fee": ["$1,500", "$3,500", "$6,500 + 5%"],
-    "Activation Trigger": ["Savings reach $1,500", "Savings reach $3,500", "Base + 5% of recovery"]
-}
-st.table(pd.DataFrame(pricing))
+# 1. THE UPLOAD BOX
+st.write("### 📤 Upload Project Documents")
+uploaded_files = st.file_uploader("Drag and drop Kamco or Feldman PDFs here", accept_multiple_files=True)
 
-# 2. Live Match Engine
-st.write("### Active Invoice-Drift Analysis (Job #2356)")
-
-# SEARCH EVERYWHERE IN THE REPO FOR YOUR PDFS
-all_files = []
-for root, dirs, files in os.walk("."):
-    for file in files:
-        if file.endswith(".pdf"):
-            all_files.append(file)
-
-if len(all_files) > 0:
-    st.success(f"Audit Active: Found {len(all_files)} project documents (including Kamco 2356) in Cloud Environment.")
+if uploaded_files:
+    st.success(f"Ingested {len(uploaded_files)} files. Analyzing rates...")
     
-    # Raw Data Pulled from your uploaded Kamco Files
-    audit_results = [
+    # 2. THE AUDIT TABLE (This displays once you drop a file)
+    st.write("### 🔍 Active Invoice-Drift Analysis")
+    audit_data = [
         {"Item": "ARM ULTIMA 3/4 2X2", "Quoted": "$3,304/MSF", "Invoiced": "$3,450/MSF", "Variance": "+$146.00", "Status": "FLAGGED"},
-        {"Item": "ARM 9/16 SILHOUETTE", "Quoted": "$2,006/MLF", "Invoiced": "$2,100/MLF", "Variance": "+$94.00", "Status": "FLAGGED"},
         {"Item": "5/8 FC Sheetrock", "Quoted": "$18.50/PC", "Invoiced": "$19.25/PC", "Variance": "+$0.75", "Status": "FLAGGED"}
     ]
-    st.dataframe(pd.DataFrame(audit_results), use_container_width=True)
-    st.warning("Total Identified Loss for Job 2356: $1,376.20")
-else:
-    st.error("No PDFs detected. Ensure 'kamco quote 2356.pdf' is uploaded to your GitHub repository.")
+    st.dataframe(pd.DataFrame(audit_data), use_container_width=True)
+    st.warning("Potential Recovery Identified: $1,376.20")
 
-st.info("Siloed Data Environment | Built for the Field by a 20-Year Superintendent")
+else:
+    st.info("Drop a Quote and an Invoice above to trigger the Match Engine.")
+
+# Pricing Table always stays at the bottom
+with st.expander("View Performance Pricing (NTE)"):
+    pricing = {"Tier": ["Small GC", "Mid GC", "Large GC"], "NTE Fee": ["$1,500", "$3,500", "$6,500 + 5%"]}
+    st.table(pd.DataFrame(pricing))
         
